@@ -1,6 +1,7 @@
 import unittest
 
 from google.appengine.ext import testbed as gae_testbed
+from google.appengine.datastore import datastore_stub_util
 
 
 class TestbedTestCase(unittest.TestCase):
@@ -21,7 +22,11 @@ class TestbedTestCase(unittest.TestCase):
 
     def setUpServices(self, testbed):
         if self.datastore:
-            testbed.init_datastore_v3_stub()
+            policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(
+                probability=0
+            )
+
+            testbed.init_datastore_v3_stub(consistency_policy=policy)
 
         if self.memcache:
             testbed.init_memcache_stub()
